@@ -1,0 +1,212 @@
+---
+title: "TeamShrub Coding Etiquette"
+author: "https://teamshrub.wordpress.com/"
+date: '24-02-2017'
+output: html_document
+---
+
+### Advice for writing clean and neat code
+Here, TeamShrub will collect tips on how to make your code easy to read, understand and use by you and everyone who might ever need to check out your code.
+
+### 1. The different elements of a script
+- __Introductory section__ - author statement (what does this script do?), author(s) names, contact details and date
+- __Libraries__ - what packages are you using for this script? When switching between scripts, with your packages already loaded, it's easy to forget to copy across the library, which means future you might get confused as to why the code isn't working anymore.
+- __Functions__ - are you using any functions written by you and/or others? Define them here.
+- __Loading data__ - what do the data represent and where do they come from? Careful to keep file paths updated.
+- __The different sections of your analysis__ - what is the logical workflow of your analysis? Keep the order in which you tackle your analysis consistent.
+
+### 2. Syntax etiquette
+#### 1. Naming files and objects.
+
+#### “There are only two hard things in Computer Science: cache invalidation and naming things.” — Phil Karlton
+
+File names should be meaningful and end in `.R`. __Avoid spaces and funky characters!!! They can cause trouble when uploading files to Github and in general when trying to locate files through certain file paths.___ If files need to be used in a particular sequence, prefix them with numbers, e.g. `0-download.R, 1-parse.R, 2-explore.R`.
+
+```{r, eval = FALSE}
+QHI_monitoring_figures_Feb2016.R  # Alright.
+
+yet_another_script.R  # Bad. Took me hours to find the file when I needed it one year later.
+```
+
+__Object names should be concise and meaningful__ 
+- Calling your data `data` might cause problems if you are doing multiple analyses at once / don't clean your environment, and you keep using the same object name. 
+- Long object names are annoying to type - more letters, higher chance you'll make a typo.
+- Variable and function names should be lowercase.
+- Use an underscore (or a dot?) to separate words within a name. Or whatever you do, be consistent.
+- Variable names should be nouns and function names should be verbs.
+
+Don't use underscores ( _ ) or hyphens ( - ) in identifiers. The preferred form for variable names is all lower case letters and words separated with dots (variable.name), but variableName is also accepted; function names have initial capital letters and no dots (FunctionName).
+
+```{r, eval = FALSE}
+#	variable.name is preferred, variableName is accepted 
+ avg.clicks # Good.
+ avgClicks # OK.
+ avg_Clicks # Not that okay.
+# FunctionName 
+ CalculateAvgClicks # Good.
+ calculate_avg_clicks , calculateAvgClicks # Bad.
+```
+
+#### 2. Spacing
+
+Place spaces around all infix operators (=, +, -, <-, etc.). The same rule applies when using = in function calls. Always put a space after a comma, and never before.
+
+There’s a small exception to this rule: :, :: and ::: don’t need spaces around them.
+
+```{r, eval = FALSE}
+x <- 1:10  # Good
+base::get  # Good
+```
+
+Place a space before left parentheses, except in a function call.
+
+```{r, eval = FALSE}
+# Good
+if (debug) do(x)
+plot(x, y)
+
+# Bad
+if(debug)do(x)
+plot (x, y)
+```
+
+Extra spacing (i.e., more than one space in a row) is ok if it improves alignment of equal signs or assignments (<-).
+
+```{r, eval = FALSE}
+list(
+  total = a + b + c, 
+  mean  = (a + b + c) / n
+)
+```
+
+Do not place spaces around code in parentheses or square brackets (unless there’s a comma, in which case see above).
+
+```{r, eval = FALSE}
+# Good
+if (debug) do(x)
+diamonds[5, ]
+
+# Bad
+if ( debug ) do(x)  # No spaces around debug
+x[1,]   # Needs a space after the comma
+x[1 ,]  # Space goes after comma not before
+```
+
+#### 3. Curly braces
+
+An opening curly brace should never go on its own line and should always be followed by a new line. A closing curly brace should always go on its own line, unless it’s followed by else.
+__Always indent the code inside curly braces.__
+
+```{r, eval = FALSE}
+# Good
+
+if (y < 0 && debug) {
+  message("Y is negative")
+}
+
+if (y == 0) {
+  log(x)
+} else {
+  y ^ x
+}
+
+# Bad
+
+if (y < 0 && debug)
+message("Y is negative")
+
+if (y == 0) {
+  log(x)
+} 
+else {
+  y ^ x
+}
+```
+
+It’s ok to leave very short statements on the same line:
+```{r, eval = FALSE}
+if (y < 0 && debug) message("Y is negative")
+```
+
+#### 4. Line length
+
+__Strive to limit your code to 80 characters per line.__ Having to continuously scroll left and write can be annoying and confusing. Also, when you publish your code on Github, the scrolly bar is all the way down, so to scroll right, you first need to scroll all the way down, scroll right, then scroll all the way up to wherever you want to be - unnecessary.
+
+How do you know what's 80 characters though? RStudio can place a handy line in your editor as a reminder! Go to `Tools/Global Options/Code/Display/Show Margin/80 characters`.
+
+#### 5. Indentation
+
+When indenting your code, use two spaces.
+
+The only exception is if a function definition runs over multiple lines. In that case, indent the second line to where the definition starts:
+
+```{r, eval = FALSE}
+long_function_name <- function(a = "a long argument", 
+                               b = "another argument",
+                               c = "another long argument") {
+  # As usual code is indented by two spaces.
+}
+```
+
+Here is a before and after of a `ggplot2` figure code:
+
+```{r, eval = FALSE}
+ggplot()+geom_hline(yintercept=0,linetype="dotted",colour="darkgrey")+
+  geom_line(data=cwa.sub, aes(x=Season,y=Total.Concentration),size=2,alpha=0.2)+
+  geom_ribbon(data=preds2, aes(x=Season, ymin=ploBT, ymax=phiBT), fill="#3cd0ea", alpha=0.3)+
+  geom_line(data=preds2,aes(x=Season,y=Total.ConcentrationBT),colour="#3cd0ea",size=3)+theme_bw()+ylab("Minimum Sea Ice Concentration")+xlab("Season")+annotate("text",x=2012,y=0.4,label=paste0("p = ",round(pval.cwa.sub,4)),size=6)+theme(legend.title=element_text(size=20,face="plain",hjust=1),legend.text=element_text(size=18,angle=45),legend.position="bottom",legend.key =element_blank(),axis.title.x=element_text(size=20,margin=margin(20,0,0,0)),axis.title.y=element_text(size=20,margin=margin(0,20,0,0)),axis.text=element_text(size=16),panel.grid.minor=element_blank(),panel.grid.major=element_blank())
+
+ggplot() + 
+  geom_hline(yintercept = 0, linetype = "dotted", colour = "darkgrey") +
+  geom_line(data = cwa.sub, aes(x = Season, y = Total.Concentration), size = 2, alpha = 0.2) +
+  geom_ribbon(data = preds2, aes(x = Season, ymin = ploBT, ymax = phiBT), fill = "#3cd0ea", alpha = 0.3) +
+  geom_line(data = preds2, aes(x = Season, y = Total.ConcentrationBT), colour = "#3cd0ea", size = 3) +
+  theme_bw() + 
+  labs(y = "Minimum Sea Ice Concentration", x = "Season") +
+  annotate("text", x = 2012, y = 0.4, label = paste("p = ", round(pval.cwa.sub,4)), size = 6) +
+  theme(legend.title = element_text(size = 20, face = "plain", hjust = 1), 
+        legend.text = element_text(size = 18, angle = 45), 
+        legend.position = "bottom", 
+        legend.key = element_blank(), 
+        axis.title.x = element_text(size = 20, margin = margin(20,0,0,0)), 
+        axis.title.y = element_text(size = 20, margin = margin(0,20,0,0)), 
+        axis.text = element_text(size=16), 
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank())
+```
+
+What if you want to make your old code neater? That's a lot of spaces you might need to add in... First, you could try using RStudio to format the code for you - click on `Code/Reformat code` and see what happens - you will get all the spaces in, but the code might be spread over too many lines, e.g. code you want on one line might now be split over 5 lines.
+
+### 3. Organisation
+
+#### 1. Code chunks
+
+If your code is many, many lines (as it usually is!), it would be easier for you and everyone who might need to read and use it, to split it into different sections. To do that, add in four or more dashes after your comments - you will see a little arrow appear next to that line of code and you will be able to collapse and expand the code chunk based on your needs. 
+
+__Organise your chunks in a logical order, so that your code flows nicely.__
+
+```{r}
+# Phenology change analysis ----
+
+# Active layer depth analysis ----
+```
+
+#### 2.Commenting guidelines
+
+Each line of a comment should begin with the comment symbol `#` and a __single space__. Comments should be concise to avoid having to scroll a lot to read them in full, and most importantly, they should be informative enough so that you and your collaborators can understand what you are doing and why you are doing it.
+
+If you are commenting inline with code, there should be __two spaces__ after the code, followed by `#`, a __single space__ and then your text.
+
+```{r, eval = FALSE}
+# Create histogram of frequency of campaigns by pct budget spent.
+hist(df$pct.spent,
+     breaks = "scott",  # method for choosing number of buckets
+     main   = "Histogram: fraction budget spent by campaignid",
+     xlab   = "Fraction of budget spent",
+     ylab   = "Frequency (count of campaignids)")
+```
+
+
+#### If you are contributing to someone else's code, try to keep your coding style consistent with theirs (unless their style is really bad, then you might be tempted to fix things...)
+
+Our coding etiquette was developed with the help of Hadley Whickham's R Style Guide http://adv-r.had.co.nz/Style.html.
