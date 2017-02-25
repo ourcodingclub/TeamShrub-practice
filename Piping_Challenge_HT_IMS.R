@@ -36,19 +36,34 @@ data <- data[-15327,]
 data <- data[-15327,]
 data <- data[-16412,]
 
-gsub(" ","",data$Country.list, fixed = TRUE)
+data$Country.list <- gsub(",","",data$Country.list, fixed = TRUE)
+data$biome <- gsub("/","",data$biome, fixed = TRUE)
 
 #Reshape data
 data <- data %>%
   gather("Year", "Pop", 26:70)
 
 # Calculate country-specific LPI ----
-test <- data %>%
+
+# plots by bioime
+biome <- data %>%
   mutate(Year = parse_number(Year)) %>%
-  mutate(Pop = parse_number(Pop)) %>%
   filter(!is.na(Pop) & Are.coordinates.for.specific.location.=="TRUE") %>%
-  select(Common.Name,Location.of.population,Country.list,Year,Pop,system,Native,Alien) %>%
-  group_by(Common.Name,Location.of.population,Country.list,system,Native,Alien) %>%
+  select(Common.Name,Location.of.population,Country.list,biome,Year,Pop,system,Native,Alien) %>%
+  group_by(Common.Name,Location.of.population,Country.list,biome,system,Native,Alien) %>%
+  filter(length(unique(Year)) > 2) %>%
+  do(fit = lm(Pop ~ Year, data = .)) %>%
+  tidy(fit) %>%
+  ungroup() %>%
+  group_by(biome) %>%
+  do(ggsave(ggplot(.,aes(x = estimate))+geom_histogram(),filename = gsub(" ","",paste("Biome_LPI/",unique(as.character(.$biome)),".pdf",sep="")),device="pdf"))
+  
+# plots by Country.list
+Country.list <- data %>%
+  mutate(Year = parse_number(Year)) %>%
+  filter(!is.na(Pop) & Are.coordinates.for.specific.location.=="TRUE") %>%
+  select(Common.Name,Location.of.population,Country.list,biome,Year,Pop,system,Native,Alien) %>%
+  group_by(Common.Name,Location.of.population,Country.list,biome,system,Native,Alien) %>%
   filter(length(unique(Year)) > 2) %>%
   do(fit = lm(Pop ~ Year, data = .)) %>%
   tidy(fit) %>%
