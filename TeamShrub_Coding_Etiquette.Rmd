@@ -9,49 +9,67 @@ output: html_document
 Here, TeamShrub will collect tips on how to make your code easy to read, understand and use by you and everyone who might ever need to check out your code.
 
 ### 1. The different elements of a script
-- __Introductory section__ - author statement (what does this script do?), author(s) names, contact details and date
-- __Libraries__ - what packages are you using for this script? When switching between scripts, with your packages already loaded, it's easy to forget to copy across the library, which means future you might get confused as to why the code isn't working anymore.
+- __Introductory section__ - author statement (what does this script do?), author(s) names, contact details and date. Optional inspirational message / joke if you are working on this analysis for the *n*-th time and need a bit of an uplift.
+- __Libraries__ - what packages are you using for this script? Keep all of them together at the start of your scipt. When switching between scripts, with your packages already loaded, it's easy to forget to copy across the library, which means future you might get confused as to why the code isn't working anymore. Your library will be extra informative to you and other people if you add in comments about what you are using each package for:
+```{r, eval = FALSE}
+library(MCMCglmm)  # running MCMC mixed effects models
+library(plyr)  # Load before dplyr to avoid conflicts between the two packages
+library(dplyr)
+```
+Alternatively, you can call the function from its package by using:
+```{r, eval = FALSE}
+dplyr::filter()  # This way you and everyone else knows the package to which a particular function belongs
+```
 - __Functions__ - are you using any functions written by you and/or others? Define them here.
-- __Loading data__ - what do the data represent and where do they come from? Careful to keep file paths updated.
+- __Loading data__ - what do the data represent and where do they come from? Careful to keep file paths updated. Always include the file path in your code, so that you can track down your data later. Keep the file path structure simple so that it makes sense to everyone.
 - __The different sections of your analysis__ - what is the logical workflow of your analysis? Keep the order in which you tackle your analysis consistent.
+- __The outputs of your analysis__ - Remember to keep your file path sensible not only when loading data in, but also when you are outputting files (e.g. `.Rdata`, `.csv` files and any figures you want saved). `.csv` files are more transferable and can be used across multiple platforms, whereas `.Rdata` files are more compressed and are quicker to work with. Saving graphs as `.pdf` files is better practice.
 
 ### 2. Syntax etiquette
 #### 1. Naming files and objects.
 
-#### “There are only two hard things in Computer Science: cache invalidation and naming things.” — Phil Karlton
+#### "There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton
 
-File names should be meaningful and end in `.R`. __Avoid spaces and funky characters!!! They can cause trouble when uploading files to Github and in general when trying to locate files through certain file paths.___ If files need to be used in a particular sequence, prefix them with numbers, e.g. `0-download.R, 1-parse.R, 2-explore.R`.
+File names should be meaningful and end in `.R`. __Avoid spaces and funky characters!!! They can cause trouble when uploading files to Github and in general when trying to locate files through certain file paths.__ 
+
+Sequential file names with dates - do we all agree with this convention from now on?
 
 ```{r, eval = FALSE}
 QHI_monitoring_figures_Feb2016.R  # Alright.
+
+QHI_monitoring_figures_2017-02-25.R  # Is this what we are aiming for?
 
 yet_another_script.R  # Bad. Took me hours to find the file when I needed it one year later.
 ```
 
 __Object names should be concise and meaningful__ 
-- Calling your data `data` might cause problems if you are doing multiple analyses at once / don't clean your environment, and you keep using the same object name. 
+- Calling your data `data` might cause problems if you are doing multiple analyses at once / don't clean your environment, and you keep using the same object name. But if you need an overwrittable universal object and you don't need to keep lots of objects from each step of your analysis, sticking with the same object name might be useful.
 - Long object names are annoying to type - more letters, higher chance you'll make a typo.
 - Variable and function names should be lowercase.
-- Use an underscore (or a dot?) to separate words within a name. Or whatever you do, be consistent.
 - Variable names should be nouns and function names should be verbs.
 
-Don't use underscores ( _ ) or hyphens ( - ) in identifiers. The preferred form for variable names is all lower case letters and words separated with dots (variable.name), but variableName is also accepted; function names have initial capital letters and no dots (FunctionName).
+##### - __Use an underscore to separate words within a file.__
+##### - __Use a dot to separate words within objects and functions.__
+__This way it's clear what's an object and what's an external file.__
+
+The preferred form for variable names is all lower case letters and words separated with dots (`variable.name`). Function names have lowercase letters and words are separated with dots (`function.name`).
 
 ```{r, eval = FALSE}
-#	variable.name is preferred, variableName is accepted 
- avg.clicks # Good.
- avgClicks # OK.
- avg_Clicks # Not that okay.
-# FunctionName 
- CalculateAvgClicks # Good.
- calculate_avg_clicks , calculateAvgClicks # Bad.
+# Variable names
+ avg.clicks  # Good.
+ avgClicks  # Teachnically okay, but we want to stick with the first option.
+ avg_Clicks  # Not that okay.
+# Function names
+ calculate.avg.clicks  # This is what we are aiming for.
+ CalculateAvgClicks  # This is technically okay, but we are going with the first option.
+ calculate_avg_clicks , calculateAvgClicks  # Bad.
 ```
 
 #### 2. Spacing
 
 Place spaces around all infix operators (=, +, -, <-, etc.). The same rule applies when using = in function calls. Always put a space after a comma, and never before.
 
-There’s a small exception to this rule: :, :: and ::: don’t need spaces around them.
+There's a small exception to this rule: :, :: and ::: don't need spaces around them.
 
 ```{r, eval = FALSE}
 x <- 1:10  # Good
@@ -70,7 +88,7 @@ if(debug)do(x)
 plot (x, y)
 ```
 
-Extra spacing (i.e., more than one space in a row) is ok if it improves alignment of equal signs or assignments (<-).
+Extra spacing (i.e., more than one space in a row) is ok if it improves alignment of equal signs or assignments (`<-`).
 
 ```{r, eval = FALSE}
 list(
@@ -79,7 +97,7 @@ list(
 )
 ```
 
-Do not place spaces around code in parentheses or square brackets (unless there’s a comma, in which case see above).
+Do not place spaces around code in parentheses or square brackets (unless there's a comma, in which case see above).
 
 ```{r, eval = FALSE}
 # Good
@@ -94,7 +112,7 @@ x[1 ,]  # Space goes after comma not before
 
 #### 3. Curly braces
 
-An opening curly brace should never go on its own line and should always be followed by a new line. A closing curly brace should always go on its own line, unless it’s followed by else.
+An opening curly brace should never go on its own line and should always be followed by a new line. A closing curly brace should always go on its own line, unless it?s followed by else.
 __Always indent the code inside curly braces.__
 
 ```{r, eval = FALSE}
@@ -123,16 +141,20 @@ else {
 }
 ```
 
-It’s ok to leave very short statements on the same line:
+It's ok to leave very short statements on the same line:
 ```{r, eval = FALSE}
 if (y < 0 && debug) message("Y is negative")
 ```
 
 #### 4. Line length
 
-__Strive to limit your code to 80 characters per line.__ Having to continuously scroll left and write can be annoying and confusing. Also, when you publish your code on Github, the scrolly bar is all the way down, so to scroll right, you first need to scroll all the way down, scroll right, then scroll all the way up to wherever you want to be - unnecessary.
+__The official convention is to limit your code to 80 characters per line.__ Having to continuously scroll left and write can be annoying and confusing. Also, when you publish your code on Github, the scrolly bar is all the way down, so to scroll right, you first need to scroll all the way down, scroll right, then scroll all the way up to wherever you want to be - unnecessary.
 
-How do you know what's 80 characters though? RStudio can place a handy line in your editor as a reminder! Go to `Tools/Global Options/Code/Display/Show Margin/80 characters`.
+__How do you know what's 80 characters though? RStudio can place a handy line in your editor as a reminder! Go to `Tools/Global Options/Code/Display/Show Margin/80 characters`.__ Sometimes it might make more sense for your code to be a bit longer than 80 characters, but in general code is easier to read if there is no need for continuous scrolling left and right.
+
+##### When using pipes, keep the piping operator `%>%` at the end of the line and continue your pipe on a new line.
+
+##### When using `ggplot2`, keep the `+` at the end of the line and continue adding on layers on a new line.
 
 #### 5. Indentation
 
@@ -175,7 +197,28 @@ ggplot() +
         panel.grid.major = element_blank())
 ```
 
-What if you want to make your old code neater? That's a lot of spaces you might need to add in... First, you could try using RStudio to format the code for you - click on `Code/Reformat code` and see what happens - you will get all the spaces in, but the code might be spread over too many lines, e.g. code you want on one line might now be split over 5 lines.
+What if you want to make your old code neater? That's a lot of spaces you might need to add in... First, you could try using RStudio to format the code for you - click on `Code/Reformat code` and see what happens - you will get all the spaces in, but R puts the code on a new line after each comma, too many lines! Try this instead:
+
+### - Reformat your old code to add in spaces and limit line length
+```{r, eval = FALSE}
+install.packages("formatR")
+library("formatR")
+# Set working directory to wherever your messy scripts are
+tidy_source("messy_script_2017-02-25.R", file = "tidy_script_2017-02-25.R", width.cutoff = 100)
+# If you don't specify file = "new_script.R", your script will get overwritten, dangerous! 
+# If you don't specify a width cutoff point, tidy_source just adds in the spaces
+# 100 characters seems like a reasonable cutoff point
+```
+
+#### - Reformat all the scripts in a directory
+```{r, eval = FALSE}
+library(formatR)
+# Set your working directory to wherever your messy scripts are
+# IMPORTANT this will override script files, so make a duplicate back up folder, in case tidy_dir messes up
+tidy_dir(path="whatever/your/path/is", recursive = TRUE)
+# recursive	- whether to recursively look for R scripts under path
+```
+
 
 ### 3. Organisation
 
@@ -206,7 +249,48 @@ hist(df$pct.spent,
      ylab   = "Frequency (count of campaignids)")
 ```
 
-
-#### If you are contributing to someone else's code, try to keep your coding style consistent with theirs (unless their style is really bad, then you might be tempted to fix things...)
-
 Our coding etiquette was developed with the help of Hadley Whickham's R Style Guide http://adv-r.had.co.nz/Style.html.
+
+### Useful RStudio plugins:
+
+RStudio addins are available for the newest version of RStudio. After you have installed certain addins, you can access them by clicking on `Addins`, which is under the `Profile` and `Tools` bar in the RStudio menu. To get a full list of RStudio plugins, run:
+
+```{r, eval = FALSE}
+install.packages('addinslist')
+```
+
+When you click on `Addins/Browse RStudio Addins` you will see the list of addins and the links to their Github repos. Here are a few nice ones:
+
+#### - Create a keyboard shortcut for %>%/n - insert a pipe and automatically move onto a new line
+```{r, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("milesmcbain/mufflr")
+# Set the keyboard shortcuts using Tools -> Addins -> Browse Addins, then click Keyboard Shortcuts...
+# Ctrl + . works nicely
+```
+
+#### - Insert a box around the introductory section of your script
+```{r, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("ThinkRstat/littleboxes")
+# Afterwards select your introductory comments, click on Addins/ Little boxes and the box appears!
+# Note that if you are also reformatting your code using formatR, reformat the code first, then add the box.
+# formatR messes up these boxes otherwise!
+```
+
+#### - Easily select colours for plots
+```{r, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("daattali/colourpicker")
+# Afterwards go to Addins/Colourpicker, choose your colours and the code for them will appear in your script
+```
+
+
+### Github etiquette
+
+1. Keep your scripts in your personal scripts folder. Don't look in other people's folders.
+2. When working on group projects, move the script out of your personal folder in the scripts folder or the relevant project folder, so that everyone can work on it.
+3. Keep filepaths short and sensible.
+4. Don't use funky characters and spaces in your file names.
+5. Always pull before you push in case someone has done any work since the last time you pulled - you wouldn't want anyone's work to get lost!
+

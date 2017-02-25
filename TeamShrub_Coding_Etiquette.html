@@ -130,11 +130,19 @@ $(document).ready(function () {
 <div id="the-different-elements-of-a-script" class="section level3">
 <h3>1. The different elements of a script</h3>
 <ul>
-<li><strong>Introductory section</strong> - author statement (what does this script do?), author(s) names, contact details and date</li>
-<li><strong>Libraries</strong> - what packages are you using for this script? When switching between scripts, with your packages already loaded, it’s easy to forget to copy across the library, which means future you might get confused as to why the code isn’t working anymore.</li>
+<li><strong>Introductory section</strong> - author statement (what does this script do?), author(s) names, contact details and date. Optional inspirational message / joke if you are working on this analysis for the <em>n</em>-th time and need a bit of an uplift.</li>
+<li><strong>Libraries</strong> - what packages are you using for this script? Keep all of them together at the start of your scipt. When switching between scripts, with your packages already loaded, it’s easy to forget to copy across the library, which means future you might get confused as to why the code isn’t working anymore. Your library will be extra informative to you and other people if you add in comments about what you are using each package for:</li>
+</ul>
+<pre class="r"><code>library(MCMCglmm)  # running MCMC mixed effects models
+library(plyr)  # Load before dplyr to avoid conflicts between the two packages
+library(dplyr)</code></pre>
+<p>Alternatively, you can call the function from its package by using:</p>
+<pre class="r"><code>dplyr::filter()  # This way you and everyone else knows the package to which a particular function belongs</code></pre>
+<ul>
 <li><strong>Functions</strong> - are you using any functions written by you and/or others? Define them here.</li>
-<li><strong>Loading data</strong> - what do the data represent and where do they come from? Careful to keep file paths updated.</li>
+<li><strong>Loading data</strong> - what do the data represent and where do they come from? Careful to keep file paths updated. Always include the file path in your code, so that you can track down your data later. Keep the file path structure simple so that it makes sense to everyone.</li>
 <li><strong>The different sections of your analysis</strong> - what is the logical workflow of your analysis? Keep the order in which you tackle your analysis consistent.</li>
+<li><strong>The outputs of your analysis</strong> - Remember to keep your file path sensible not only when loading data in, but also when you are outputting files (e.g. <code>.Rdata</code>, <code>.csv</code> files and any figures you want saved). <code>.csv</code> files are more transferable and can be used across multiple platforms, whereas <code>.Rdata</code> files are more compressed and are quicker to work with. Saving graphs as <code>.pdf</code> files is better practice.</li>
 </ul>
 </div>
 <div id="syntax-etiquette" class="section level3">
@@ -142,21 +150,32 @@ $(document).ready(function () {
 <div id="naming-files-and-objects." class="section level4">
 <h4>1. Naming files and objects.</h4>
 </div>
-<div id="there-are-only-two-hard-things-in-computer-science-cache-invalidation-and-naming-things.-phil-karlton" class="section level4">
-<h4>“There are only two hard things in Computer Science: cache invalidation and naming things.” — Phil Karlton</h4>
-<p>File names should be meaningful and end in <code>.R</code>. <strong>Avoid spaces and funky characters!!! They can cause trouble when uploading files to Github and in general when trying to locate files through certain file paths.</strong>_ If files need to be used in a particular sequence, prefix them with numbers, e.g. <code>0-download.R, 1-parse.R, 2-explore.R</code>.</p>
+<div id="there-are-only-two-hard-things-in-computer-science-cache-invalidation-and-naming-things.---phil-karlton" class="section level4">
+<h4>“There are only two hard things in Computer Science: cache invalidation and naming things.” - Phil Karlton</h4>
+<p>File names should be meaningful and end in <code>.R</code>. <strong>Avoid spaces and funky characters!!! They can cause trouble when uploading files to Github and in general when trying to locate files through certain file paths.</strong></p>
+<p>Sequential file names with dates - do we all agree with this convention from now on?</p>
 <pre class="r"><code>QHI_monitoring_figures_Feb2016.R  # Alright.
 
+QHI_monitoring_figures_2017-02-25.R  # Is this what we are aiming for?
+
 yet_another_script.R  # Bad. Took me hours to find the file when I needed it one year later.</code></pre>
-<p><strong>Object names should be concise and meaningful</strong> - Calling your data <code>data</code> might cause problems if you are doing multiple analyses at once / don’t clean your environment, and you keep using the same object name. - Long object names are annoying to type - more letters, higher chance you’ll make a typo. - Variable and function names should be lowercase. - Use an underscore (or a dot?) to separate words within a name. Or whatever you do, be consistent. - Variable names should be nouns and function names should be verbs.</p>
-<p>Don’t use underscores ( _ ) or hyphens ( - ) in identifiers. The preferred form for variable names is all lower case letters and words separated with dots (variable.name), but variableName is also accepted; function names have initial capital letters and no dots (FunctionName).</p>
-<pre class="r"><code>#   variable.name is preferred, variableName is accepted 
- avg.clicks # Good.
- avgClicks # OK.
- avg_Clicks # Not that okay.
-# FunctionName 
- CalculateAvgClicks # Good.
- calculate_avg_clicks , calculateAvgClicks # Bad.</code></pre>
+<p><strong>Object names should be concise and meaningful</strong> - Calling your data <code>data</code> might cause problems if you are doing multiple analyses at once / don’t clean your environment, and you keep using the same object name. But if you need an overwrittable universal object and you don’t need to keep lots of objects from each step of your analysis, sticking with the same object name might be useful. - Long object names are annoying to type - more letters, higher chance you’ll make a typo. - Variable and function names should be lowercase. - Variable names should be nouns and function names should be verbs.</p>
+<div id="use-an-underscore-to-separate-words-within-a-file." class="section level5">
+<h5>- <strong>Use an underscore to separate words within a file.</strong></h5>
+</div>
+<div id="use-a-dot-to-separate-words-within-objects-and-functions." class="section level5">
+<h5>- <strong>Use a dot to separate words within objects and functions.</strong></h5>
+<p><strong>This way it’s clear what’s an object and what’s an external file.</strong></p>
+<p>The preferred form for variable names is all lower case letters and words separated with dots (<code>variable.name</code>). Function names have lowercase letters and words are separated with dots (<code>function.name</code>).</p>
+<pre class="r"><code># Variable names
+ avg.clicks  # Good.
+ avgClicks  # Teachnically okay, but we want to stick with the first option.
+ avg_Clicks  # Not that okay.
+# Function names
+ calculate.avg.clicks  # This is what we are aiming for.
+ CalculateAvgClicks  # This is technically okay, but we are going with the first option.
+ calculate_avg_clicks , calculateAvgClicks  # Bad.</code></pre>
+</div>
 </div>
 <div id="spacing" class="section level4">
 <h4>2. Spacing</h4>
@@ -172,7 +191,7 @@ plot(x, y)
 # Bad
 if(debug)do(x)
 plot (x, y)</code></pre>
-<p>Extra spacing (i.e., more than one space in a row) is ok if it improves alignment of equal signs or assignments (&lt;-).</p>
+<p>Extra spacing (i.e., more than one space in a row) is ok if it improves alignment of equal signs or assignments (<code>&lt;-</code>).</p>
 <pre class="r"><code>list(
   total = a + b + c, 
   mean  = (a + b + c) / n
@@ -189,7 +208,7 @@ x[1 ,]  # Space goes after comma not before</code></pre>
 </div>
 <div id="curly-braces" class="section level4">
 <h4>3. Curly braces</h4>
-<p>An opening curly brace should never go on its own line and should always be followed by a new line. A closing curly brace should always go on its own line, unless it’s followed by else. <strong>Always indent the code inside curly braces.</strong></p>
+<p>An opening curly brace should never go on its own line and should always be followed by a new line. A closing curly brace should always go on its own line, unless it?s followed by else. <strong>Always indent the code inside curly braces.</strong></p>
 <pre class="r"><code># Good
 
 if (y &lt; 0 &amp;&amp; debug) {
@@ -218,8 +237,14 @@ else {
 </div>
 <div id="line-length" class="section level4">
 <h4>4. Line length</h4>
-<p><strong>Strive to limit your code to 80 characters per line.</strong> Having to continuously scroll left and write can be annoying and confusing. Also, when you publish your code on Github, the scrolly bar is all the way down, so to scroll right, you first need to scroll all the way down, scroll right, then scroll all the way up to wherever you want to be - unnecessary.</p>
-<p>How do you know what’s 80 characters though? RStudio can place a handy line in your editor as a reminder! Go to <code>Tools/Global Options/Code/Display/Show Margin/80 characters</code>.</p>
+<p><strong>The official convention is to limit your code to 80 characters per line.</strong> Having to continuously scroll left and write can be annoying and confusing. Also, when you publish your code on Github, the scrolly bar is all the way down, so to scroll right, you first need to scroll all the way down, scroll right, then scroll all the way up to wherever you want to be - unnecessary.</p>
+<p><strong>How do you know what’s 80 characters though? RStudio can place a handy line in your editor as a reminder! Go to <code>Tools/Global Options/Code/Display/Show Margin/80 characters</code>.</strong> Sometimes it might make more sense for your code to be a bit longer than 80 characters, but in general code is easier to read if there is no need for continuous scrolling left and right.</p>
+<div id="when-using-pipes-keep-the-piping-operator-at-the-end-of-the-line-and-continue-your-pipe-on-a-new-line." class="section level5">
+<h5>When using pipes, keep the piping operator <code>%&gt;%</code> at the end of the line and continue your pipe on a new line.</h5>
+</div>
+<div id="when-using-ggplot2-keep-the-at-the-end-of-the-line-and-continue-adding-on-layers-on-a-new-line." class="section level5">
+<h5>When using <code>ggplot2</code>, keep the <code>+</code> at the end of the line and continue adding on layers on a new line.</h5>
+</div>
 </div>
 <div id="indentation" class="section level4">
 <h4>5. Indentation</h4>
@@ -253,7 +278,25 @@ ggplot() +
         axis.text = element_text(size=16), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank())</code></pre>
-<p>What if you want to make your old code neater? That’s a lot of spaces you might need to add in… First, you could try using RStudio to format the code for you - click on <code>Code/Reformat code</code> and see what happens - you will get all the spaces in, but the code might be spread over too many lines, e.g. code you want on one line might now be split over 5 lines.</p>
+<p>What if you want to make your old code neater? That’s a lot of spaces you might need to add in… First, you could try using RStudio to format the code for you - click on <code>Code/Reformat code</code> and see what happens - you will get all the spaces in, but R puts the code on a new line after each comma, too many lines! Try this instead:</p>
+</div>
+</div>
+<div id="reformat-your-old-code-to-add-in-spaces-and-limit-line-length" class="section level3">
+<h3>- Reformat your old code to add in spaces and limit line length</h3>
+<pre class="r"><code>install.packages(&quot;formatR&quot;)
+library(&quot;formatR&quot;)
+# Set working directory to wherever your messy scripts are
+tidy_source(&quot;messy_script_2017-02-25.R&quot;, file = &quot;tidy_script_2017-02-25.R&quot;, width.cutoff = 100)
+# If you don't specify file = &quot;new_script.R&quot;, your script will get overwritten, dangerous! 
+# If you don't specify a width cutoff point, tidy_source just adds in the spaces
+# 100 characters seems like a reasonable cutoff point</code></pre>
+<div id="reformat-all-the-scripts-in-a-directory" class="section level4">
+<h4>- Reformat all the scripts in a directory</h4>
+<pre class="r"><code>library(formatR)
+# Set your working directory to wherever your messy scripts are
+# IMPORTANT this will override script files, so make a duplicate back up folder, in case tidy_dir messes up
+tidy_dir(path=&quot;whatever/your/path/is&quot;, recursive = TRUE)
+# recursive - whether to recursively look for R scripts under path</code></pre>
 </div>
 </div>
 <div id="organisation" class="section level3">
@@ -276,11 +319,45 @@ hist(df$pct.spent,
      main   = &quot;Histogram: fraction budget spent by campaignid&quot;,
      xlab   = &quot;Fraction of budget spent&quot;,
      ylab   = &quot;Frequency (count of campaignids)&quot;)</code></pre>
-</div>
-<div id="if-you-are-contributing-to-someone-elses-code-try-to-keep-your-coding-style-consistent-with-theirs-unless-their-style-is-really-bad-then-you-might-be-tempted-to-fix-things" class="section level4">
-<h4>If you are contributing to someone else’s code, try to keep your coding style consistent with theirs (unless their style is really bad, then you might be tempted to fix things…)</h4>
 <p>Our coding etiquette was developed with the help of Hadley Whickham’s R Style Guide <a href="http://adv-r.had.co.nz/Style.html" class="uri">http://adv-r.had.co.nz/Style.html</a>.</p>
 </div>
+</div>
+<div id="useful-rstudio-plugins" class="section level3">
+<h3>Useful RStudio plugins:</h3>
+<p>RStudio addins are available for the newest version of RStudio. After you have installed certain addins, you can access them by clicking on <code>Addins</code>, which is under the <code>Profile</code> and <code>Tools</code> bar in the RStudio menu. To get a full list of RStudio plugins, run:</p>
+<pre class="r"><code>install.packages('addinslist')</code></pre>
+<p>When you click on <code>Addins/Browse RStudio Addins</code> you will see the list of addins and the links to their Github repos. Here are a few nice ones:</p>
+<div id="create-a-keyboard-shortcut-for-n---insert-a-pipe-and-automatically-move-onto-a-new-line" class="section level4">
+<h4>- Create a keyboard shortcut for %&gt;%/n - insert a pipe and automatically move onto a new line</h4>
+<pre class="r"><code># install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;milesmcbain/mufflr&quot;)
+# Set the keyboard shortcuts using Tools -&gt; Addins -&gt; Browse Addins, then click Keyboard Shortcuts...
+# Ctrl + . works nicely</code></pre>
+</div>
+<div id="insert-a-box-around-the-introductory-section-of-your-script" class="section level4">
+<h4>- Insert a box around the introductory section of your script</h4>
+<pre class="r"><code># install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;ThinkRstat/littleboxes&quot;)
+# Afterwards select your introductory comments, click on Addins/ Little boxes and the box appears!
+# Note that if you are also reformatting your code using formatR, reformat the code first, then add the box.
+# formatR messes up these boxes otherwise!</code></pre>
+</div>
+<div id="easily-select-colours-for-plots" class="section level4">
+<h4>- Easily select colours for plots</h4>
+<pre class="r"><code># install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;daattali/colourpicker&quot;)
+# Afterwards go to Addins/Colourpicker, choose your colours and the code for them will appear in your script</code></pre>
+</div>
+</div>
+<div id="github-etiquette" class="section level3">
+<h3>Github etiquette</h3>
+<ol style="list-style-type: decimal">
+<li>Keep your scripts in your personal scripts folder. Don’t look in other people’s folders.</li>
+<li>When working on group projects, move the script out of your personal folder in the scripts folder or the relevant project folder, so that everyone can work on it.</li>
+<li>Keep filepaths short and sensible.</li>
+<li>Don’t use funky characters and spaces in your file names.</li>
+<li>Always pull before you push in case someone has done any work since the last time you pulled - you wouldn’t want anyone’s work to get lost!</li>
+</ol>
 </div>
 
 
